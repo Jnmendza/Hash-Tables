@@ -1,22 +1,25 @@
-# Initial Commit
 # '''
 # Linked List hash table key/value pair
 # '''
+
+
 class LinkedPair:
     def __init__(self, key, value):
         self.key = key
         self.value = value
         self.next = None
 
+
 class HashTable:
     '''
     A hash table that with `capacity` buckets
     that accepts string keys
     '''
+
     def __init__(self, capacity):
+        self.count = 0  # Number of elements in the array
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
-
 
     def _hash(self, key):
         '''
@@ -26,15 +29,18 @@ class HashTable:
         '''
         return hash(key)
 
-
     def _hash_djb2(self, key):
         '''
         Hash an arbitrary key using DJB2 hash
 
         OPTIONAL STRETCH: Research and implement DJB2
         '''
-        pass
-
+        # Start from an arbitrary large prime
+        hashValue = 5381
+        # Bit-shift and sum value for each char
+        for char in key:
+            hashValue = ((hashValue << 5) + hashValue) + char
+        return hashValue
 
     def _hash_mod(self, key):
         '''
@@ -43,8 +49,7 @@ class HashTable:
         '''
         return self._hash(key) % self.capacity
 
-
-    def insert(self, key, value):
+    def insert(self, index, value):
         '''
         Store the value with the given key.
 
@@ -55,9 +60,24 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # Make sure we have open space
+        if self.count >= self.capacity:
+            # TODO: Make array dynamically resize
+            print("ERROR: Array is full")
+            return
+        # Make sure key is in range
+        if index > self.count:
+            print("ERROR: Index out of range")
+            return
 
+        # shift everything over to the right
+        # start with the last one, move it to the right
+        for i in range(self.count, index, -1):
+            self.storage[i] = self.storage[i-1]
 
+        # insert the value
+        self.storage[index] = value
+        self.count += 1
 
     def remove(self, key):
         '''
@@ -69,7 +89,6 @@ class HashTable:
         '''
         pass
 
-
     def retrieve(self, key):
         '''
         Retrieve the value stored with the given key.
@@ -80,7 +99,6 @@ class HashTable:
         '''
         pass
 
-
     def resize(self):
         '''
         Doubles the capacity of the hash table and
@@ -89,7 +107,6 @@ class HashTable:
         Fill this in.
         '''
         pass
-
 
 
 if __name__ == "__main__":
