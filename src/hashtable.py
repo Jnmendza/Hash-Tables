@@ -49,7 +49,7 @@ class HashTable:
         '''
         return self._hash(key) % self.capacity
 
-    def insert(self, index, value):
+    def insert(self, key, value):
         '''
         Store the value with the given key.
 
@@ -60,14 +60,15 @@ class HashTable:
 
         Fill this in.
         '''
+        index = self._hash_mod(key)
         # Make sure we have open space
         if self.count >= self.capacity:
             # TODO: Make array dynamically resize
             print("ERROR: Array is full")
             return
-        # Make sure key is in range
+        # Make sure index is in range
         if index > self.count:
-            print("ERROR: Index out of range")
+            print("ERROR: key out of range")
             return
 
         # shift everything over to the right
@@ -77,6 +78,7 @@ class HashTable:
 
         # insert the value
         self.storage[index] = value
+        # Increment count
         self.count += 1
 
     def remove(self, key):
@@ -87,7 +89,20 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+
+        if self.storage[index] is not None:
+            current = self.storage[index]
+            if key == current.key:
+                self.storage[index] = current.key
+                return
+            while current.next is not None:
+                prev = current
+                current = current.next
+                if key == current.next:
+                    prev.next = current.next
+                    return
+            print("Warning: Item doesn't not exist")
 
     def retrieve(self, key):
         '''
@@ -97,7 +112,17 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+
+        if self.storage[index] is not None:
+            current = self.storage[index]
+            if key == current.key:
+                return current.value
+            while current.next is not None:
+                current = current.next
+                if key == current.key:
+                    return current.value
+        return None
 
     def resize(self):
         '''
@@ -106,7 +131,12 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        self.capacity *= 2
+        new_storage = [None] * self.capacity
+        for i in range(self.count):
+            new_storage[i] = self.storage[i]
+
+        self.storage = new_storage
 
 
 if __name__ == "__main__":
